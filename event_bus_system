@@ -1,0 +1,540 @@
+/**
+ * NeoGPT: Event Bus System Module
+ * Version: 3.7.0
+ * 
+ * Implements a sophisticated event bus for inter-agent communication and coordination.
+ * This module enables asynchronous, event-driven messaging between agents in the network.
+ */
+
+class EventBusSystem {
+  constructor(config = {}) {
+    this.config = {
+      distributed: config.distributed || false,
+      resilient: config.resilient || true,
+      priorityLevels: config.priorityLevels || 5,
+      messageEncryption: config.messageEncryption || false,
+      deliveryGuarantee: config.deliveryGuarantee || 'at-least-once',
+      retryAttempts: config.retryAttempts || 3,
+      retryDelay: config.retryDelay || 1000, // ms
+      ...config
+    };
+    
+    this.subscribers = new Map();
+    this.messageQueue = [];
+    this.processingQueue = false;
+    this.messageCounter = 0;
+    this.systemStartTime = new Date();
+    
+    this.metrics = {
+      messagesPublished: 0,
+      messagesDelivered: 0,
+      deliveryErrors: 0,
+      eventCounts: {},
+      subscriberCounts: {},
+      averageProcessingTime: 0,
+      topicCounts: {}
+    };
+    
+    // Start queue processing if enabled
+    if (this.config.distributed) {
+      this._startQueueProcessing();
+    }
+  }
+
+  /**
+   * Subscribe to a topic
+   * @param {string} topic - The event topic to subscribe to
+   * @param {function} callback - The callback to execute when events are published
+   * @return {function} Unsubscribe function
+   */
+  subscribe(topic, callback) {
+    if (!this.subscribers.has(topic)) {
+      this.subscribers.set(topic, new Set());
+      this.metrics.topicCounts[topic] = 0;
+    }
+    
+    this.subscribers.get(topic).add(callback);
+    this.metrics.subscriberCounts[topic] = (this.metrics.subscriberCounts[topic] || 0) + 1;
+    
+    // Return unsubscribe function
+    return () => {
+      this.unsubscribe(topic, callback);
+    };
+  }
+
+  /**
+   * Unsubscribe from a topic
+   * @param {string} topic - The event topic to unsubscribe from
+   * @param {function} callback - The callback to remove
+   * @return {boolean} Success indicator
+   */
+  unsubscribe(topic, callback) {
+    if (!this.subscribers.has(topic)) {
+      return false;
+    }
+    
+    const result = this.subscribers.get(topic).delete(callback);
+    
+    if (result) {
+      this.metrics.subscriberCounts[topic]--;
+    }
+    
+    // Remove topic if no subscribers left
+    if (this.subscribers.get(topic).size === 0) {
+      this.subscribers.delete(topic);
+      delete this.metrics.subscriberCounts[topic];
+    }
+    
+    return result;
+  }
+
+  /**
+   * Publish a message to a topic
+   * @param {string} topic - The event topic to publish to
+   * @param {any} message - The message to publish
+   * @param {Object} options - Publishing options
+   * @return {string} Message ID
+   */
+  publish(topic, message, options = {}) {
+    this.messageCounter++;
+    this.metrics.messagesPublished++;
+    
+    // Track topic message count
+    this.metrics.topicCounts[topic] = (this.metrics.topicCounts[topic] || 0) + 1;
+    
+    // Track event type counts if specified
+    if (message && message.type) {
+      this.metrics.eventCounts[message.type] = (this.metrics.eventCounts[message.type] || 0) + 1;
+    }
+    
+    const messageId = `msg-${Date.now()}-${this.messageCounter}`;
+    const priorityLevel = options.priority || this._getMessagePriority(topic, message);
+    
+    const messageObj = {
+      id: messageId,
+      topic,
+      message,
+      priorityLevel,
+      timestamp: new Date(),
+      deliveryAttempts: 0,
+      maxDeliveryAttempts: options.maxAttempts || this.config.retryAttempts,
+      status: 'queued',
+      options
+    };
+    
+    if (this.config.distributed) {
+      // In a distributed system, add to message queue for processing
+      this._addToQueue(messageObj);
+    } else {
+      // Simple in-memory immediate delivery
+      this._deliverMessage(messageObj);
+    }
+    
+    return messageId;
+  }
+
+  /**
+   * Add a message to the processing queue
+   * @param {Object} messageObj - The message object to queue
+   */
+  _addToQueue(messageObj) {
+    this.messageQueue.push(messageObj);
+    
+    // Sort queue by priority (higher first)
+    this.messageQueue.sort((a, b) => b.priorityLevel - a.priorityLevel);
+    
+    if (!this.processingQueue) {
+      this._processQueue();
+    }
+  }
+
+  /**
+   * Start queue processing
+   */
+  _startQueueProcessing() {
+    // In a real implementation, this would be a continuous process
+    setInterval(() => {
+      if (this.messageQueue.length > 0 && !this.processingQueue) {
+        this._processQueue();
+      }
+    }, 50); // Check queue every 50ms
+  }
+
+  /**
+   * Process the message queue
+   */
+  _processQueue() {
+    if (this.messageQueue.length === 0) {
+      this.processingQueue = false;
+      return;
+    }
+    
+    this.processingQueue = true;
+    
+    // Get the next message
+    const messageObj = this.messageQueue.shift();
+    
+    // Process message
+    this._deliverMessage(messageObj)
+      .then(delivered => {
+        if (!delivered) {
+          messageObj.deliveryAttempts++;
+          
+          if (messageObj.deliveryAttempts < messageObj.maxDeliveryAttempts) {
+            // Re-queue the message with lower priority
+            messageObj.priorityLevel = Math.max(1, messageObj.priorityLevel - 1);
+            
+            // Add delay before retrying
+            setTimeout(() => {
+              this.messageQueue.push(messageObj);
+              
+              // Re-sort the queue
+              this.messageQueue.sort((a, b) => b.priorityLevel - a.priorityLevel);
+            }, this.config.retryDelay * messageObj.deliveryAttempts);
+          } else {
+            // Message delivery failed after max attempts
+            messageObj.status = 'failed';
+            this.metrics.deliveryErrors++;
+            
+            // In a real system, this would go to a dead letter queue
+            console.error(`Message delivery failed after ${messageObj.deliveryAttempts} attempts:`, messageObj);
+          }
+        }
+        
+        // Continue processing queue
+        setTimeout(() => {
+          this._processQueue();
+        }, 0);
+      })
+      .catch(error => {
+        console.error('Error during message delivery:', error);
+        this.metrics.deliveryErrors++;
+        
+        // Continue processing queue
+        setTimeout(() => {
+          this._processQueue();
+        }, 0);
+      });
+  }
+
+  /**
+   * Deliver a message to subscribers
+   * @param {Object} messageObj - The message object to deliver
+   * @return {Promise<boolean>} Delivery success indicator
+   */
+  async _deliverMessage(messageObj) {
+    const startTime = Date.now();
+    
+    if (!this.subscribers.has(messageObj.topic)) {
+      return false; // No subscribers
+    }
+    
+    const subscribers = this.subscribers.get(messageObj.topic);
+    const deliveryPromises = [];
+    
+    // Send to each subscriber
+    for (const callback of subscribers) {
+      deliveryPromises.push(
+        new Promise(resolve => {
+          try {
+            // Apply message encryption if configured
+            const processedMessage = this.config.messageEncryption ? 
+              this._encryptMessage(messageObj.message) : messageObj.message;
+            
+            // Execute subscriber callback
+            callback(processedMessage, {
+              topic: messageObj.topic,
+              timestamp: messageObj.timestamp,
+              messageId: messageObj.id
+            });
+            
+            resolve(true);
+          } catch (error) {
+            console.error(`Error delivering message to subscriber:`, error);
+            resolve(false);
+          }
+        })
+      );
+    }
+    
+    // Wait for all deliveries to complete
+    const results = await Promise.all(deliveryPromises);
+    const allDelivered = results.every(r => r);
+    
+    if (allDelivered) {
+      messageObj.status = 'delivered';
+      this.metrics.messagesDelivered++;
+    }
+    
+    // Update processing time metrics
+    const processingTime = Date.now() - startTime;
+    this.metrics.averageProcessingTime = 
+      (this.metrics.averageProcessingTime * (this.metrics.messagesDelivered - 1) + processingTime) / 
+      Math.max(1, this.metrics.messagesDelivered);
+    
+    return allDelivered;
+  }
+
+  /**
+   * Encrypt a message for secure delivery
+   * @param {any} message - The message to encrypt
+   * @return {Object} Encrypted message
+   */
+  _encryptMessage(message) {
+    // This would use proper encryption in a real implementation
+    // For simulation, we just mark it as encrypted
+    return {
+      encrypted: true,
+      content: message,
+      timestamp: new Date()
+    };
+  }
+
+  /**
+   * Get message priority based on topic and content
+   * @param {string} topic - The message topic
+   * @param {any} message - The message content
+   * @return {number} Priority level (higher is more important)
+   */
+  _getMessagePriority(topic, message) {
+    // Default priority (middle of range)
+    let priority = Math.floor(this.config.priorityLevels / 2);
+    
+    // Higher priority for system events
+    if (topic.startsWith('system:')) {
+      priority = this.config.priorityLevels - 1;
+    }
+    
+    // Higher priority for workflow control
+    if (topic.startsWith('workflow:')) {
+      priority = this.config.priorityLevels - 2;
+    }
+    
+    // Higher priority for task events
+    if (topic.startsWith('task:')) {
+      priority = this.config.priorityLevels - 3;
+    }
+    
+    // Lower priority for analytics
+    if (topic.startsWith('analytics:')) {
+      priority = 2;
+    }
+    
+    // Lowest priority for logging
+    if (topic.startsWith('log:')) {
+      priority = 1;
+    }
+    
+    // Adjust based on message content if it has an explicit priority
+    if (message && message.priority !== undefined) {
+      const messagePriority = typeof message.priority === 'number' ?
+        message.priority : 
+        (message.priority === 'high' ? this.config.priorityLevels - 1 : 
+         message.priority === 'medium' ? Math.floor(this.config.priorityLevels / 2) : 1);
+      
+      priority = Math.max(priority, messagePriority);
+    }
+    
+    return Math.min(this.config.priorityLevels, Math.max(1, priority));
+  }
+
+  /**
+   * Subscribe to multiple topics
+   * @param {Array<string>} topics - List of topics to subscribe to
+   * @param {function} callback - The callback to execute
+   * @return {function} Unsubscribe function for all topics
+   */
+  subscribeToMany(topics, callback) {
+    const unsubscribeFunctions = topics.map(topic => this.subscribe(topic, callback));
+    
+    // Return a function that unsubscribes from all topics
+    return () => {
+      unsubscribeFunctions.forEach(unsubscribe => unsubscribe());
+    };
+  }
+
+  /**
+   * Subscribe to topic pattern (using regex)
+   * @param {RegExp} pattern - Topic pattern to match
+   * @param {function} callback - The callback to execute
+   * @return {Object} Subscription controller
+   */
+  subscribeToPattern(pattern, callback) {
+    // Find current matching topics
+    const matchingTopics = Array.from(this.subscribers.keys())
+      .filter(topic => pattern.test(topic));
+    
+    // Subscribe to all currently matching topics
+    const subscriptions = matchingTopics.map(topic => this.subscribe(topic, callback));
+    
+    // Create pattern subscription record
+    const patternSubscription = {
+      pattern,
+      callback,
+      active: true,
+      unsubscribe: () => {
+        patternSubscription.active = false;
+        subscriptions.forEach(unsubscribe => unsubscribe());
+      }
+    };
+    
+    // Add hook for new topics that match pattern
+    const originalSubscribe = this.subscribe;
+    this.subscribe = (topic, cb) => {
+      const result = originalSubscribe.call(this, topic, cb);
+      
+      // If this is a new topic that matches our pattern, subscribe our callback too
+      if (patternSubscription.active && pattern.test(topic) && 
+          !matchingTopics.includes(topic)) {
+        matchingTopics.push(topic);
+        subscriptions.push(this.subscribe(topic, callback));
+      }
+      
+      return result;
+    };
+    
+    return patternSubscription;
+  }
+
+  /**
+   * Publish to multiple topics
+   * @param {Array<string>} topics - Topics to publish to
+   * @param {any} message - Message to publish
+   * @param {Object} options - Publishing options
+   * @return {Array<string>} Message IDs
+   */
+  publishToMany(topics, message, options = {}) {
+    return topics.map(topic => this.publish(topic, message, options));
+  }
+
+  /**
+   * Clear all subscriptions
+   */
+  clearAllSubscriptions() {
+    this.subscribers.clear();
+    this.metrics.subscriberCounts = {};
+    
+    return {
+      status: 'cleared',
+      timestamp: new Date()
+    };
+  }
+
+  /**
+   * Get event bus metrics
+   * @return {Object} Current metrics
+   */
+  getMetrics() {
+    const uptime = Date.now() - this.systemStartTime.getTime();
+    const currentSubscriberCount = Array.from(this.subscribers.values())
+      .reduce((total, subscribers) => total + subscribers.size, 0);
+    
+    return {
+      messagesPublished: this.metrics.messagesPublished,
+      messagesDelivered: this.metrics.messagesDelivered,
+      deliveryErrors: this.metrics.deliveryErrors,
+      deliverySuccessRate: this.metrics.messagesPublished > 0 ? 
+        (this.metrics.messagesDelivered / this.metrics.messagesPublished) : 1,
+      averageProcessingTime: this.metrics.averageProcessingTime,
+      currentTopicCount: this.subscribers.size,
+      currentSubscriberCount,
+      messageRate: uptime > 0 ? (this.metrics.messagesPublished / (uptime / 1000)) : 0, // msgs/sec
+      subscribersByTopic: this.metrics.subscriberCounts,
+      messagesByTopic: this.metrics.topicCounts,
+      messagesByEventType: this.metrics.eventCounts,
+      currentQueueSize: this.messageQueue.length,
+      uptime: {
+        milliseconds: uptime,
+        seconds: Math.floor(uptime / 1000),
+        minutes: Math.floor(uptime / (1000 * 60)),
+        hours: Math.floor(uptime / (1000 * 60 * 60))
+      },
+      timestamp: new Date()
+    };
+  }
+
+  /**
+   * Reset metrics counters
+   */
+  resetMetrics() {
+    const preserveSubscriberCounts = { ...this.metrics.subscriberCounts };
+    const preserveTopicCounts = { ...this.metrics.topicCounts };
+    
+    this.metrics = {
+      messagesPublished: 0,
+      messagesDelivered: 0,
+      deliveryErrors: 0,
+      eventCounts: {},
+      subscriberCounts: preserveSubscriberCounts,
+      averageProcessingTime: 0,
+      topicCounts: preserveTopicCounts
+    };
+    
+    return {
+      status: 'reset',
+      timestamp: new Date()
+    };
+  }
+  
+  /**
+   * Create a namespaced event bus
+   * @param {string} namespace - Namespace prefix for topics
+   * @return {Object} Namespaced event bus interface
+   */
+  createNamespace(namespace) {
+    // Ensure namespace ends with a colon
+    const ns = namespace.endsWith(':') ? namespace : `${namespace}:`;
+    
+    return {
+      subscribe: (topic, callback) => 
+        this.subscribe(`${ns}${topic}`, callback),
+        
+      unsubscribe: (topic, callback) => 
+        this.unsubscribe(`${ns}${topic}`, callback),
+        
+      publish: (topic, message, options = {}) => 
+        this.publish(`${ns}${topic}`, message, options),
+        
+      subscribeToMany: (topics, callback) => 
+        this.subscribeToMany(topics.map(t => `${ns}${t}`), callback),
+        
+      publishToMany: (topics, message, options = {}) => 
+        this.publishToMany(topics.map(t => `${ns}${t}`), message, options),
+        
+      getMetricsForNamespace: () => {
+        const metrics = this.getMetrics();
+        const nsMetrics = {
+          messagesPublished: 0,
+          messagesDelivered: 0,
+          subscriberCount: 0,
+          topicCount: 0,
+          subscribersByTopic: {},
+          messagesByTopic: {}
+        };
+        
+        // Filter metrics for this namespace
+        Object.entries(metrics.subscribersByTopic).forEach(([topic, count]) => {
+          if (topic.startsWith(ns)) {
+            nsMetrics.subscribersByTopic[topic.substring(ns.length)] = count;
+            nsMetrics.subscriberCount += count;
+            nsMetrics.topicCount++;
+          }
+        });
+        
+        Object.entries(metrics.messagesByTopic).forEach(([topic, count]) => {
+          if (topic.startsWith(ns)) {
+            nsMetrics.messagesByTopic[topic.substring(ns.length)] = count;
+            nsMetrics.messagesPublished += count;
+            // Estimate delivered based on overall rate
+            nsMetrics.messagesDelivered += count * metrics.deliverySuccessRate;
+          }
+        });
+        
+        return nsMetrics;
+      }
+    };
+  }
+}
+
+// Export the EventBusSystem class for use by other modules
+module.exports = EventBusSystem;

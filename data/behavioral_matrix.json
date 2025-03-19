@@ -1,0 +1,173 @@
+{
+  "attributes": {
+    "adaptability": {
+      "type": "numeric",
+      "range": [0, 100],
+      "default": 50
+    },
+    "creativity": {
+      "type": "numeric",
+      "range": [0, 100],
+      "default": 50
+    },
+    "efficiency": {
+      "type": "numeric",
+      "range": [0, 100],
+      "default": 50
+    },
+    "reliability": {
+      "type": "numeric",
+      "range": [0, 100],
+      "default": 50
+    },
+    "sociability": {
+      "type": "numeric",
+      "range": [0, 100],
+      "default": 50
+    }
+  },
+  "behaviors": {
+    "communication": {
+      "style": "professional",
+      "frequency": "moderate",
+      "formality": "high"
+    },
+    "decisionMaking": {
+      "style": "analytical",
+      "speed": "moderate",
+      "riskTolerance": "medium"
+    },
+    "problemSolving": {
+      "approach": "systematic",
+      "creativity": "balanced",
+      "persistence": "high"
+    },
+    "collaboration": {
+      "style": "cooperative",
+      "leadership": "situational",
+      "adaptability": "high"
+    }
+  },
+  "matrix": {
+    "ResearcherAgent": {
+      "adaptability": 60,
+      "creativity": 70,
+      "efficiency": 80,
+      "reliability": 90,
+      "sociability": 40,
+      "communication": {
+        "style": "academic",
+        "frequency": "moderate",
+        "formality": "high"
+      }
+    },
+    "DataProcessorAgent": {
+      "adaptability": 50,
+      "creativity": 40,
+      "efficiency": 90,
+      "reliability": 95,
+      "sociability": 30,
+      "problemSolving": {
+        "approach": "methodical",
+        "creativity": "low",
+        "persistence": "very-high"
+      }
+    },
+    "ContactManagerAgent": {
+      "adaptability": 70,
+      "creativity": 50,
+      "efficiency": 80,
+      "reliability": 85,
+      "sociability": 80,
+      "communication": {
+        "style": "friendly",
+        "frequency": "high",
+        "formality": "medium"
+      }
+    },
+    "CommunicationsAgent": {
+      "adaptability": 80,
+      "creativity": 75,
+      "efficiency": 70,
+      "reliability": 80,
+      "sociability": 90,
+      "communication": {
+        "style": "persuasive",
+        "frequency": "very-high",
+        "formality": "adaptive"
+      }
+    },
+    "OpportunityAnalyzerAgent": {
+      "adaptability": 70,
+      "creativity": 80,
+      "efficiency": 75,
+      "reliability": 85,
+      "sociability": 60,
+      "decisionMaking": {
+        "style": "strategic",
+        "speed": "balanced",
+        "riskTolerance": "medium-high"
+      }
+    },
+    "EngineerAgent": {
+      "adaptability": 65,
+      "creativity": 80,
+      "efficiency": 85,
+      "reliability": 90,
+      "sociability": 50,
+      "problemSolving": {
+        "approach": "analytical",
+        "creativity": "high",
+        "persistence": "very-high"
+      }
+    },
+    "MechanicAgent": {
+      "adaptability": 75,
+      "creativity": 70,
+      "efficiency": 80,
+      "reliability": 85,
+      "sociability": 60,
+      "problemSolving": {
+        "approach": "practical",
+        "creativity": "medium",
+        "persistence": "high"
+      }
+    },
+    "DesignAgent": {
+      "adaptability": 85,
+      "creativity": 95,
+      "efficiency": 75,
+      "reliability": 80,
+      "sociability": 70,
+      "communication": {
+        "style": "visual",
+        "frequency": "high",
+        "formality": "low"
+      }
+    },
+    "CADAgent": {
+      "adaptability": 70,
+      "creativity": 85,
+      "efficiency": 80,
+      "reliability": 90,
+      "sociability": 50,
+      "problemSolving": {
+        "approach": "methodical",
+        "creativity": "high",
+        "persistence": "high"
+      }
+    },
+    "PrintSliceAgent": {
+      "adaptability": 75,
+      "creativity": 60,
+      "efficiency": 85,
+      "reliability": 90,
+      "sociability": 45,
+      "problemSolving": {
+        "approach": "technical",
+        "creativity": "medium",
+        "persistence": "very-high"
+      }
+    }
+  }
+} 

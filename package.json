@@ -1,0 +1,57 @@
+{
+  "name": "mr-smith-sales-toolkit",
+  "version": "1.0.0",
+  "description": "A collection of advanced sales tools for enhancing client management and sales efficiency",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "activate": "node activate-mr-smith.js",
+    "enrich": "node src/examples/company_enricher_example.js",
+    "enrich:mock": "node src/examples/company_enricher_example.js mock",
+    "enrich:real": "node src/examples/company_enricher_example.js real",
+    "enrich:single": "node src/examples/company_enricher_example.js single",
+    "opportunity": "node src/examples/opportunity_score_example.js",
+    "opportunity:create": "node src/examples/opportunity_score_example.js create",
+    "opportunity:score": "node src/examples/opportunity_score_example.js score",
+    "meeting": "node src/examples/meeting_assistant_example.js",
+    "meeting:create": "node src/examples/meeting_assistant_example.js create",
+    "meeting:brief": "node src/examples/meeting_assistant_example.js brief",
+    "meeting:talking-points": "node src/examples/meeting_assistant_example.js talking-points",
+    "meeting:record": "node src/examples/meeting_assistant_example.js record",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/mr-smith-sales-toolkit.git"
+  },
+  "keywords": [
+    "sales",
+    "crm",
+    "ai",
+    "data-enrichment",
+    "sales-automation"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.8.3",
+    "dotenv": "^16.4.7",
+    "exceljs": "^4.3.0",
+    "fs-extra": "^10.1.0",
+    "moment": "^2.29.3",
+    "natural": "^8.0.1",
+    "node": "^20.19.0",
+    "node-fetch": "^2.6.7",
+    "nvm": "^0.0.4",
+    "pip": "^0.0.1",
+    "puppeteer": "^24.4.0",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "jest": "^28.0.0",
+    "nock": "^13.2.4"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

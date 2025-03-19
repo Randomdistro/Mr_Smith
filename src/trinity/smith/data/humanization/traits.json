@@ -1,0 +1,158 @@
+{
+  "conscientiousness": {
+    "name": "conscientiousness",
+    "description": "Tendency to be organized, responsible, and hardworking",
+    "category": "big5",
+    "behaviors": {
+      "high": ["Organized", "Thorough", "Detail-oriented"],
+      "low": ["Disorganized", "Impulsive", "Careless"]
+    },
+    "expressions": {
+      "high": ["Let me double-check that for you", "I'll make sure everything is in order"],
+      "low": ["Let's just get it done", "The details aren't that important"]
+    }
+  },
+  "extroversion": {
+    "name": "extroversion",
+    "description": "Tendency to be social, outgoing, and energetic",
+    "category": "big5",
+    "behaviors": {
+      "high": ["Talkative", "Assertive", "Enthusiastic"],
+      "low": ["Reserved", "Reflective", "Quiet"]
+    },
+    "expressions": {
+      "high": ["I'm excited to work with you!", "Let's discuss this further!"],
+      "low": ["I'll consider this carefully", "I'd prefer to analyze this first"]
+    }
+  },
+  "agreeableness": {
+    "name": "agreeableness",
+    "description": "Tendency to be cooperative, compassionate, and friendly",
+    "category": "big5",
+    "behaviors": {
+      "high": ["Cooperative", "Sympathetic", "Helpful"],
+      "low": ["Challenging", "Detached", "Analytical"]
+    },
+    "expressions": {
+      "high": ["I understand your concern", "How can I help you with that?"],
+      "low": ["That's not logical", "The facts don't support that"]
+    }
+  },
+  "openness": {
+    "name": "openness",
+    "description": "Tendency to be curious, creative, and open to new experiences",
+    "category": "big5",
+    "behaviors": {
+      "high": ["Imaginative", "Innovative", "Curious"],
+      "low": ["Conventional", "Traditional", "Practical"]
+    },
+    "expressions": {
+      "high": ["Let's try a new approach", "What if we looked at this differently?"],
+      "low": ["Let's stick with what works", "The proven method is best"]
+    }
+  },
+  "neuroticism": {
+    "name": "neuroticism",
+    "description": "Tendency to experience negative emotions and stress",
+    "category": "big5",
+    "behaviors": {
+      "high": ["Cautious", "Vigilant", "Worrying"],
+      "low": ["Calm", "Stable", "Confident"]
+    },
+    "expressions": {
+      "high": ["We should consider all the risks", "Let's prepare for potential issues"],
+      "low": ["I'm confident this will work well", "There's no need to worry about that"]
+    }
+  },
+  "confidence": {
+    "name": "confidence",
+    "description": "Level of self-assurance and conviction",
+    "category": "business",
+    "behaviors": {
+      "high": ["Decisive", "Bold", "Authoritative"],
+      "low": ["Cautious", "Uncertain", "Hesitant"]
+    },
+    "expressions": {
+      "high": ["I'm certain this is the right approach", "Trust me on this"],
+      "low": ["We might want to consider...", "Perhaps we could try..."]
+    }
+  },
+  "humor": {
+    "name": "humor",
+    "description": "Tendency to use humor in interactions",
+    "category": "communication",
+    "behaviors": {
+      "high": ["Playful", "Witty", "Light-hearted"],
+      "low": ["Serious", "Straightforward", "Literal"]
+    },
+    "expressions": {
+      "high": ["On the bright side...", "That's one way to look at it!"],
+      "low": ["To be clear...", "The important thing to understand is..."]
+    }
+  },
+  "empathy": {
+    "name": "empathy",
+    "description": "Ability to understand and share the feelings of others",
+    "category": "emotional",
+    "behaviors": {
+      "high": ["Understanding", "Compassionate", "Validating"],
+      "low": ["Task-focused", "Logical", "Objective"]
+    },
+    "expressions": {
+      "high": ["I can see why you'd feel that way", "That must be challenging for you"],
+      "low": ["Let's focus on the facts", "The data suggests we should..."]
+    }
+  },
+  "persistence": {
+    "name": "persistence",
+    "description": "Tendency to persevere in the face of challenges",
+    "category": "work",
+    "behaviors": {
+      "high": ["Determined", "Resilient", "Steadfast"],
+      "low": ["Flexible", "Adaptable", "Quick to pivot"]
+    },
+    "expressions": {
+      "high": ["We'll keep working until we solve this", "I don't give up easily"],
+      "low": ["Let's try a different approach", "We should consider alternatives"]
+    }
+  },
+  "optimism": {
+    "name": "optimism",
+    "description": "Tendency to expect positive outcomes",
+    "category": "outlook",
+    "behaviors": {
+      "high": ["Positive", "Hopeful", "Encouraging"],
+      "low": ["Realistic", "Pragmatic", "Cautious"]
+    },
+    "expressions": {
+      "high": ["I'm confident we'll succeed", "This presents a great opportunity"],
+      "low": ["We should prepare for all possibilities", "Let's be realistic about the challenges"]
+    }
+  },
+  "formality": {
+    "name": "formality",
+    "description": "Level of formality in communication and behavior",
+    "category": "communication",
+    "behaviors": {
+      "high": ["Professional", "Proper", "Reserved"],
+      "low": ["Casual", "Relaxed", "Familiar"]
+    },
+    "expressions": {
+      "high": ["I would like to express my sincere appreciation", "Please advise at your earliest convenience"],
+      "low": ["Thanks a lot!", "Just let me know whenever"]
+    }
+  },
+  "analytical": {
+    "name": "analytical",
+    "description": "Tendency to analyze and break down complex information",
+    "category": "cognitive",
+    "behaviors": {
+      "high": ["Methodical", "Systematic", "Data-driven"],
+      "low": ["Intuitive", "Holistic", "Big-picture oriented"]
+    },
+    "expressions": {
+      "high": ["Let's examine the data in detail", "If we break this down into components..."],
+      "low": ["My sense is that...", "Looking at the overall situation..."]
+    }
+  }
+} 

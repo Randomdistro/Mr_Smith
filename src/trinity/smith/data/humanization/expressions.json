@@ -1,0 +1,254 @@
+{
+  "business_formal": {
+    "name": "business_formal",
+    "description": "Formal business communication style",
+    "category": "business",
+    "templates": {
+      "greeting": [
+        "I hope this message finds you well.",
+        "Thank you for the opportunity to connect.",
+        "I appreciate your time and consideration.",
+        "It's a pleasure to be in touch with you."
+      ],
+      "agreement": [
+        "I concur with your assessment.",
+        "Your proposal aligns with our objectives.",
+        "That's an excellent point.",
+        "I'm in complete agreement with your perspective."
+      ],
+      "disagreement": [
+        "I would like to offer an alternative perspective.",
+        "There may be some additional factors to consider.",
+        "While I understand your position, there are other aspects to consider.",
+        "I respectfully suggest a different approach."
+      ],
+      "closing": [
+        "I look forward to our continued collaboration.",
+        "Please let me know if you require any clarification.",
+        "Thank you for your consideration of these matters.",
+        "I'm available at your convenience to discuss this further."
+      ]
+    },
+    "wordChoices": {
+      "positive": ["optimal", "advantageous", "beneficial", "profitable", "efficient", "effective"],
+      "negative": ["suboptimal", "challenging", "concerning", "problematic", "inefficient", "counterproductive"],
+      "neutral": ["noteworthy", "significant", "relevant", "substantial", "considerable", "apparent"]
+    }
+  },
+  "business_casual": {
+    "name": "business_casual",
+    "description": "Relaxed but professional business communication",
+    "category": "business",
+    "templates": {
+      "greeting": [
+        "I hope you're doing well today.",
+        "Great to be in touch with you.",
+        "Thanks for taking the time to connect.",
+        "Hope you're having a productive week."
+      ],
+      "agreement": [
+        "I agree completely.",
+        "That makes perfect sense.",
+        "You've got a great point there.",
+        "I'm on the same page with you."
+      ],
+      "disagreement": [
+        "I see things a bit differently.",
+        "I have a slightly different take on this.",
+        "Have you considered another angle?",
+        "I wonder if we should look at this another way."
+      ],
+      "closing": [
+        "Looking forward to working together on this.",
+        "Let me know what you think.",
+        "Happy to discuss this further if needed.",
+        "Feel free to reach out with any questions."
+      ]
+    },
+    "wordChoices": {
+      "positive": ["great", "solid", "valuable", "helpful", "useful", "practical"],
+      "negative": ["difficult", "tough", "concerning", "problematic", "tricky", "unfortunate"],
+      "neutral": ["interesting", "notable", "worth mentioning", "considerable", "significant", "noticeable"]
+    }
+  },
+  "technical_precise": {
+    "name": "technical_precise",
+    "description": "Precise technical communication style",
+    "category": "technical",
+    "templates": {
+      "greeting": [
+        "Let's review the technical specifications.",
+        "I've analyzed the system parameters.",
+        "Based on the technical requirements provided.",
+        "After reviewing the technical documentation."
+      ],
+      "agreement": [
+        "The data confirms your hypothesis.",
+        "Your technical assessment is accurate.",
+        "The metrics support this conclusion.",
+        "This aligns with established technical standards."
+      ],
+      "disagreement": [
+        "The metrics indicate a different conclusion.",
+        "The technical specifications don't support that approach.",
+        "According to the data, an alternative solution may be more effective.",
+        "From a technical perspective, we should consider other options."
+      ],
+      "closing": [
+        "Let me know if you need additional technical details.",
+        "I'm available to discuss implementation specifics.",
+        "Feel free to request clarification on any technical aspect.",
+        "I can provide further technical documentation if required."
+      ]
+    },
+    "wordChoices": {
+      "positive": ["efficient", "optimized", "reliable", "scalable", "robust", "streamlined"],
+      "negative": ["inefficient", "unstable", "deprecated", "incompatible", "suboptimal", "bottlenecked"],
+      "neutral": ["documented", "specified", "measured", "configured", "implemented", "integrated"]
+    }
+  },
+  "casual_friendly": {
+    "name": "casual_friendly",
+    "description": "Casual and friendly communication style",
+    "category": "casual",
+    "templates": {
+      "greeting": [
+        "Hey there!",
+        "Great to connect with you!",
+        "How's it going?",
+        "Hope you're having a good day!"
+      ],
+      "agreement": [
+        "I'm totally with you on that.",
+        "That sounds like a great idea!",
+        "You're absolutely right!",
+        "Couldn't agree more!"
+      ],
+      "disagreement": [
+        "I see it a bit differently.",
+        "Have you thought about it this way?",
+        "Maybe we could look at another angle?",
+        "I'm not so sure about that."
+      ],
+      "closing": [
+        "Looking forward to chatting more!",
+        "Let me know what you think!",
+        "Talk to you soon!",
+        "Happy to help anytime!"
+      ]
+    },
+    "wordChoices": {
+      "positive": ["great", "awesome", "fantastic", "excellent", "amazing", "brilliant"],
+      "negative": ["tricky", "tough", "not ideal", "needs work", "challenging", "unfortunate"],
+      "neutral": ["interesting", "notable", "worth considering", "substantial", "significant", "curious"]
+    }
+  },
+  "academic_formal": {
+    "name": "academic_formal",
+    "description": "Scholarly and research-oriented communication",
+    "category": "academic",
+    "templates": {
+      "greeting": [
+        "I would like to address the topic at hand.",
+        "The matter under consideration requires examination.",
+        "With regard to the subject of our discussion.",
+        "In reference to the previously discussed matters."
+      ],
+      "agreement": [
+        "The evidence strongly supports this conclusion.",
+        "Prior research aligns with this assessment.",
+        "The data exhibits a clear pattern consistent with your hypothesis.",
+        "This interpretation is well-supported by established theory."
+      ],
+      "disagreement": [
+        "The current literature suggests an alternative interpretation.",
+        "There are several methodological considerations that warrant attention.",
+        "A critical analysis reveals certain inconsistencies in this reasoning.",
+        "One might question the underlying assumptions of this approach."
+      ],
+      "closing": [
+        "This warrants further investigation in subsequent studies.",
+        "Additional research would elucidate these findings.",
+        "I would propose continued examination of these phenomena.",
+        "This conclusion invites further scholarly discourse."
+      ]
+    },
+    "wordChoices": {
+      "positive": ["robust", "significant", "compelling", "substantive", "rigorous", "thorough"],
+      "negative": ["problematic", "deficient", "inconclusive", "inconsistent", "anomalous", "specious"],
+      "neutral": ["apparent", "purported", "ostensible", "putative", "presumed", "reported"]
+    }
+  },
+  "supportive_empathetic": {
+    "name": "supportive_empathetic",
+    "description": "Caring and understanding communication style",
+    "category": "support",
+    "templates": {
+      "greeting": [
+        "I understand you're facing some challenges.",
+        "I'm here to help with whatever you need.",
+        "Thank you for sharing your concerns with me.",
+        "I appreciate you reaching out for support."
+      ],
+      "agreement": [
+        "You're absolutely right to feel that way.",
+        "I completely understand your perspective.",
+        "What you're experiencing is entirely valid.",
+        "Your concerns make perfect sense."
+      ],
+      "disagreement": [
+        "I wonder if looking at it differently might help?",
+        "Have you considered another possibility?",
+        "There might be another approach worth exploring.",
+        "Perhaps we could think about this from another angle."
+      ],
+      "closing": [
+        "I'm here for you whenever you need support.",
+        "Please don't hesitate to reach out anytime.",
+        "Remember that you're not alone in this.",
+        "I'm just a message away if you need anything at all."
+      ]
+    },
+    "wordChoices": {
+      "positive": ["supportive", "helpful", "reassuring", "encouraging", "comforting", "validating"],
+      "negative": ["challenging", "difficult", "uncomfortable", "concerning", "troubling", "worrying"],
+      "neutral": ["noticeable", "apparent", "evident", "observable", "perceptible", "detectable"]
+    }
+  },
+  "sales_persuasive": {
+    "name": "sales_persuasive",
+    "description": "Convincing and value-focused communication",
+    "category": "business",
+    "templates": {
+      "greeting": [
+        "I'm excited to share something valuable with you.",
+        "I've been thinking about how we could boost your results.",
+        "I've discovered an opportunity you might find interesting.",
+        "I wanted to reach out about an exciting possibility."
+      ],
+      "agreement": [
+        "You've made an excellent point about the value proposition.",
+        "I completely agree that ROI is the critical factor here.",
+        "You're absolutely right to focus on long-term benefits.",
+        "That's precisely why our solution stands out."
+      ],
+      "disagreement": [
+        "While cost is important, have you considered the return on investment?",
+        "I understand your concern, but let me show you another perspective.",
+        "That's a common misconception, but the data tells a different story.",
+        "Many people think that initially, until they see the results."
+      ],
+      "closing": [
+        "Let me know when you'd like to take the next step.",
+        "I'm confident you'll see significant results from this decision.",
+        "I'd be happy to provide a custom demonstration for your team.",
+        "This opportunity is available for a limited time, so let's connect soon."
+      ]
+    },
+    "wordChoices": {
+      "positive": ["exclusive", "premium", "guaranteed", "proven", "revolutionary", "transformative"],
+      "negative": ["costly", "risky", "problematic", "challenging", "difficult", "concerning"],
+      "neutral": ["noticeable", "significant", "substantial", "considerable", "measurable", "observable"]
+    }
+  }
+} 

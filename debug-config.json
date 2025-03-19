@@ -1,0 +1,273 @@
+{
+  "version": "1.0.0",
+  "project": "NeoGPT_Mr_Smith",
+  "description": "Debugging configuration for the Mr. Smith agent framework",
+  "environmentSettings": {
+    "dev": {
+      "logLevel": "debug",
+      "enableTelemetry": true,
+      "enableConsoleLogging": true,
+      "enableVerboseErrors": true,
+      "apiPort": 3000,
+      "enableMocking": true,
+      "dataPath": "./data/dev",
+      "storagePath": "./storage/dev",
+      "maxAgents": 50,
+      "apiRateLimit": false
+    },
+    "test": {
+      "logLevel": "info",
+      "enableTelemetry": false,
+      "enableConsoleLogging": true,
+      "enableVerboseErrors": true,
+      "apiPort": 3001,
+      "enableMocking": true,
+      "dataPath": "./data/test",
+      "storagePath": "./storage/test",
+      "maxAgents": 10,
+      "apiRateLimit": false
+    },
+    "prod": {
+      "logLevel": "error",
+      "enableTelemetry": true,
+      "enableConsoleLogging": false,
+      "enableVerboseErrors": false,
+      "apiPort": 3000,
+      "enableMocking": false,
+      "dataPath": "./data/prod",
+      "storagePath": "./storage/prod",
+      "maxAgents": 100,
+      "apiRateLimit": true
+    }
+  },
+  "launchConfigurations": [
+    {
+      "name": "Start Smith API Server",
+      "script": "src/index.js",
+      "args": ["--api"],
+      "env": "dev",
+      "autoAttachDebugger": true,
+      "restartOnFileChange": true,
+      "watchPatterns": [
+        "src/trinity/smith/**/*.js",
+        "src/trinity/smith/api/**/*.js"
+      ],
+      "ignorePatterns": [
+        "**/*.test.js",
+        "**/*.spec.js"
+      ]
+    },
+    {
+      "name": "Run Business Agent Example",
+      "script": "src/trinity/smith/examples/create_business_agent.js",
+      "env": "dev",
+      "autoAttachDebugger": true
+    },
+    {
+      "name": "Run API Client Example",
+      "script": "src/trinity/smith/examples/api_client.js",
+      "env": "dev",
+      "autoAttachDebugger": true
+    },
+    {
+      "name": "Run Custom Agent Example",
+      "script": "src/trinity/smith/examples/custom_agent_type.js",
+      "env": "dev",
+      "autoAttachDebugger": true
+    },
+    {
+      "name": "Run Refactored Usage Example",
+      "script": "src/trinity/smith/examples/refactored_usage.js",
+      "env": "dev",
+      "autoAttachDebugger": true
+    },
+    {
+      "name": "Run Web Scraper Agent",
+      "script": "src/trinity/smith/examples/web_scraper_example.js",
+      "args": ["--target=blender"],
+      "env": "dev",
+      "autoAttachDebugger": true
+    }
+  ],
+  "breakpoints": [
+    {
+      "path": "src/trinity/smith/Smith.js",
+      "line": 122,
+      "condition": "specs.type === 'WebScraperAgent'",
+      "logMessage": "Creating WebScraperAgent",
+      "description": "Break when creating a web scraper agent"
+    },
+    {
+      "path": "src/trinity/smith/api/SmithAPI.js",
+      "line": 172,
+      "description": "Break at agent creation API endpoint"
+    },
+    {
+      "path": "src/trinity/smith/utils/ErrorHandler.js",
+      "line": 86,
+      "condition": "error instanceof AgentError",
+      "description": "Break on agent errors"
+    }
+  ],
+  "logPoints": [
+    {
+      "path": "src/trinity/smith/tools/AttributeManager.js",
+      "line": 143,
+      "logMessage": "Applying attributes: {attributes}",
+      "condition": "agent.type === 'WebScraperAgent'"
+    },
+    {
+      "path": "src/trinity/smith/Smith.js",
+      "line": 235,
+      "logMessage": "Agent metrics: {this.metrics}"
+    }
+  ],
+  "watchExpressions": [
+    "smith.agents.size",
+    "agent.state.mode",
+    "errorHandler.errorCounts",
+    "configManager.config.smith"
+  ],
+  "debuggerSettings": {
+    "console": "internalConsole",
+    "internalConsoleOptions": "openOnSessionStart",
+    "outputCapture": "std",
+    "sourceMaps": true,
+    "enableSourceMapCaching": true,
+    "showAsyncStacks": true,
+    "smartStep": true,
+    "skipFiles": [
+      "<node_internals>/**",
+      "**/node_modules/**"
+    ],
+    "timeouts": {
+      "startup": 10000,
+      "request": 5000
+    }
+  },
+  "componentDebugSettings": {
+    "Smith": {
+      "enableDetailedLogging": true,
+      "trackedEvents": [
+        "agent:initialized",
+        "agent:task_start",
+        "agent:task_complete",
+        "agent:error",
+        "smith:agent_created",
+        "smith:agent_destroyed"
+      ],
+      "monitorAgentStates": true,
+      "logAgentMetrics": true
+    },
+    "AttributeManager": {
+      "logAttributeChanges": true,
+      "validateAllChanges": true,
+      "dumpProfilesOnChange": true
+    },
+    "SmithAPI": {
+      "logAllRequests": true,
+      "logResponseTimes": true,
+      "mockOracleApprovals": true
+    },
+    "HumanizationEngine": {
+      "logPersonaApplications": true,
+      "logTraitCalculations": true
+    },
+    "WebScraperAgent": {
+      "maxConcurrentRequests": 3,
+      "requestDelay": 3000,
+      "logExtractionDetails": true,
+      "saveRawHtml": true, 
+      "maxTutorialsPerSource": 5,
+      "useTestUrls": true,
+      "testUrls": [
+        "https://www.blender.org/tutorials/",
+        "https://knowledge.autodesk.com/support/autocad/learn"
+      ]
+    }
+  },
+  "testSettings": {
+    "enableCoverage": true,
+    "testMatch": [
+      "**/__tests__/**/*.js",
+      "**/*.{spec,test}.js"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 80,
+        "functions": 80,
+        "lines": 80,
+        "statements": 80
+      }
+    },
+    "collectCoverageFrom": [
+      "src/trinity/smith/**/*.js",
+      "!src/trinity/smith/**/*.{test,spec}.js",
+      "!src/trinity/smith/examples/**"
+    ]
+  },
+  "performance": {
+    "enableProfiling": true,
+    "cpuProfilePath": "./profiling/cpu-profile.cpuprofile",
+    "heapSnapshotPath": "./profiling/heap-snapshot.heapsnapshot",
+    "monitorThresholds": {
+      "memoryUsageMB": 1024,
+      "cpuUsagePercent": 80,
+      "responseTimeMs": 200,
+      "concurrentAgents": 20
+    }
+  },
+  "mockData": {
+    "enableMocks": true,
+    "mockSources": {
+      "oracle": "./mocks/oracle-responses.json",
+      "architect": "./mocks/architect-specs.json",
+      "externalApis": "./mocks/external-apis.json"
+    }
+  },
+  "securitySettings": {
+    "requireApproval": true,
+    "allowAnonymousAgents": false,
+    "validateInputs": true,
+    "sanitizeOutputs": true,
+    "maxRequestSize": "10mb",
+    "rateLimits": {
+      "createAgent": 10,
+      "destroyAgent": 10,
+      "applyAttributes": 20
+    }
+  },
+  "vscodeIntegration": {
+    "launch": {
+      "version": "0.2.0",
+      "configurations": [
+        {
+          "type": "node",
+          "request": "launch",
+          "name": "Debug Smith API Server",
+          "program": "${workspaceFolder}/src/index.js",
+          "args": ["--api"],
+          "env": {
+            "NODE_ENV": "development",
+            "SMITH_API_PORT": "3000",
+            "SMITH_LOG_LEVEL": "debug"
+          },
+          "skipFiles": [
+            "<node_internals>/**"
+          ]
+        },
+        {
+          "type": "node",
+          "request": "launch",
+          "name": "Debug Web Scraper Agent",
+          "program": "${workspaceFolder}/src/trinity/smith/examples/web_scraper_example.js",
+          "args": ["--target=blender"],
+          "env": {
+            "NODE_ENV": "development",
+            "DEBUG": "webScraper:*"
+          }
+        }
+      ]
+    }
+  }
+} 

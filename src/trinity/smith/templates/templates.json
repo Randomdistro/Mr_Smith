@@ -1,0 +1,70 @@
+{
+  "GenericAgent": {
+    "path": "generic/GenericAgent.js",
+    "description": "A versatile agent with basic capabilities for general use cases",
+    "parameters": {}
+  },
+  "BusinessAgent": {
+    "path": "business/BusinessAgent.js",
+    "description": "Agent specialized for business operations, sales, and client interactions",
+    "parameters": {
+      "industry": "string",
+      "seniorityLevel": "number",
+      "specializations": "string[]",
+      "communicationPreferences": {
+        "formality": "number",
+        "detailLevel": "number",
+        "persuasiveness": "number"
+      }
+    }
+  },
+  "ResearchAgent": {
+    "path": "research/ResearchAgent.js",
+    "description": "Agent focused on data gathering, research, and analysis",
+    "parameters": {
+      "researchTopics": "string[]",
+      "dataSourceAccess": "object",
+      "analyticalCapabilities": "string[]"
+    }
+  },
+  "TechnicalAgent": {
+    "path": "technical/TechnicalAgent.js",
+    "description": "Agent specialized in technical domains, programming, and system integration",
+    "parameters": {
+      "domains": "string[]",
+      "programmingLanguages": "string[]",
+      "technicalSkillLevel": "number",
+      "integrationCapabilities": "string[]"
+    }
+  },
+  "CreativeAgent": {
+    "path": "creative/CreativeAgent.js",
+    "description": "Agent focused on creative content generation and design",
+    "parameters": {
+      "creativeFields": "string[]",
+      "stylePreferences": "object",
+      "contentTypes": "string[]",
+      "creativeFreedom": "number"
+    }
+  },
+  "EducationAgent": {
+    "path": "education/EducationAgent.js",
+    "description": "Agent specialized in educational content, tutoring, and assessment",
+    "parameters": {
+      "subjectAreas": "string[]",
+      "educationalLevels": "string[]",
+      "teachingStyles": "string[]",
+      "assessmentCapabilities": "boolean"
+    }
+  },
+  "CustomerServiceAgent": {
+    "path": "customer-service/CustomerServiceAgent.js",
+    "description": "Agent designed for customer support, inquiries, and problem resolution",
+    "parameters": {
+      "supportAreas": "string[]",
+      "responseStyle": "string",
+      "problemResolutionLevel": "number",
+      "escalationThreshold": "number"
+    }
+  }
+} 

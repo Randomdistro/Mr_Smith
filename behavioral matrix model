@@ -1,0 +1,484 @@
+/**
+ * NeoGPT: Behavioral Matrix Module
+ * Version: 3.7.0
+ * 
+ * Implements Mr. Smith's comprehensive behavioral matrix for agent attribute configuration.
+ * This module handles the psychological and behavioral modeling for agent customization.
+ */
+
+class BehavioralMatrix {
+    constructor() {
+      this.matrix = this._initializeMatrix();
+    }
+    
+    /**
+     * Initialize the comprehensive behavioral matrix based on Mr. Smith's framework
+     */
+    _initializeMatrix() {
+      return {
+        personalityDimensions: {
+          openness: { range: [1, 100], default: 50, description: "Openness to experience - creativity, curiosity, and preference for variety" },
+          conscientiousness: { range: [1, 100], default: 50, description: "Conscientiousness - organization, thoroughness, and reliability" },
+          extraversion: { range: [1, 100], default: 50, description: "Extraversion - sociability, assertiveness, and expressiveness" },
+          agreeableness: { range: [1, 100], default: 50, description: "Agreeableness - cooperation, compassion, and trust" },
+          neuroticism: { range: [1, 100], default: 50, description: "Neuroticism - emotional stability vs. reactivity to stressors" }
+        },
+        
+        cognitiveAbilities: {
+          analyticalIntelligence: { range: [1, 100], default: 50, description: "Ability to analyze information and solve complex problems" },
+          creativeIntelligence: { range: [1, 100], default: 50, description: "Ability to generate novel ideas and solutions" },
+          practicalIntelligence: { range: [1, 100], default: 50, description: "Ability to apply knowledge to real-world situations" },
+          emotionalIntelligence: { range: [1, 100], default: 50, description: "Ability to understand and manage emotions effectively" }
+        },
+        
+        valueSystems: {
+          selfDirection: { range: [1, 100], default: 50, description: "Independent thought and action" },
+          stimulation: { range: [1, 100], default: 50, description: "Excitement, novelty, and challenge" },
+          hedonism: { range: [1, 100], default: 50, description: "Pleasure and sensuous gratification" },
+          achievement: { range: [1, 100], default: 50, description: "Personal success through demonstrating competence" },
+          power: { range: [1, 100], default: 50, description: "Social status, prestige, control over resources and people" },
+          security: { range: [1, 100], default: 50, description: "Safety, harmony, and stability" },
+          conformity: { range: [1, 100], default: 50, description: "Restraint of actions likely to upset others or violate norms" },
+          tradition: { range: [1, 100], default: 50, description: "Respect for cultural customs and ideas" },
+          benevolence: { range: [1, 100], default: 50, description: "Preservation and enhancement of welfare of people" },
+          universalism: { range: [1, 100], default: 50, description: "Understanding, appreciation, and protection for all people and nature" }
+        },
+        
+        behavioralTendencies: {
+          assertiveness: { range: [1, 100], default: 50, description: "Tendency to state opinions and defend positions confidently" },
+          riskTaking: { range: [1, 100], default: 50, description: "Willingness to take chances for potential rewards" },
+          adaptability: { range: [1, 100], default: 50, description: "Flexibility in response to changing conditions" },
+          empathy: { range: [1, 100], default: 50, description: "Ability to understand and share the feelings of others" },
+          decisionMakingSpeed: { range: [1, 100], default: 50, description: "Rate at which decisions are made when presented with options" }
+        },
+        
+        socialDynamics: {
+          leadershipPotential: { range: [1, 100], default: 50, description: "Capacity to guide and influence others" },
+          teamworkAbility: { range: [1, 100], default: 50, description: "Effectiveness in collaborative settings" },
+          conflictResolution: { range: [1, 100], default: 50, description: "Skill in managing and resolving interpersonal conflicts" },
+          persuasiveness: { range: [1, 100], default: 50, description: "Ability to convince others and change their perspectives" }
+        },
+        
+        ethicalFramework: {
+          careHarm: { range: [1, 100], default: 50, description: "Concern for the well-being and suffering of others" },
+          fairnessCheating: { range: [1, 100], default: 50, description: "Commitment to equity, justice, and rights" },
+          loyaltyBetrayal: { range: [1, 100], default: 50, description: "Valuing group membership and interpersonal bonds" },
+          authoritySubversion: { range: [1, 100], default: 50, description: "Respect for legitimate authority and tradition" },
+          sanctityDegradation: { range: [1, 100], default: 50, description: "Concern for purity and contamination (physical or spiritual)" },
+          libertyOppression: { range: [1, 100], default: 50, description: "Opposition to domination and restrictions on freedom" }
+        },
+        
+        stressResponse: {
+          stressTolerance: { range: [1, 100], default: 50, description: "Ability to function effectively under pressure" },
+          copingMechanisms: { 
+            options: [
+              'problem-solving', 
+              'social-support', 
+              'emotional-regulation', 
+              'avoidance', 
+              'cognitive-reframing'
+            ], 
+            default: ['problem-solving'],
+            description: "Preferred strategies for managing stress"
+          }
+        },
+        
+        goalOrientation: {
+          shortTermGoalFocus: { range: [1, 100], default: 50, description: "Emphasis on immediate objectives" },
+          longTermGoalFocus: { range: [1, 100], default: 50, description: "Emphasis on distant objectives" },
+          achievementDrive: { range: [1, 100], default: 50, description: "Motivation to accomplish challenging tasks" }
+        },
+        
+        adaptiveLearning: {
+          learningSpeed: { range: [1, 100], default: 50, description: "Rate of acquisition of new knowledge and skills" },
+          memoryRetention: { range: [1, 100], default: 50, description: "Ability to store and recall information" },
+          skillAcquisitionRate: { range: [1, 100], default: 50, description: "Pace at which new capabilities are developed" }
+        }
+      };
+    }
+    
+    /**
+     * Get default attribute values for all categories
+     */
+    getDefaultAttributes() {
+      const defaults = {};
+      
+      Object.entries(this.matrix).forEach(([category, attributes]) => {
+        defaults[category] = {};
+        
+        Object.entries(attributes).forEach(([attribute, config]) => {
+          if (Array.isArray(config.default)) {
+            defaults[category][attribute] = [...config.default];
+          } else {
+            defaults[category][attribute] = config.default;
+          }
+        });
+      });
+      
+      return defaults;
+    }
+    
+    /**
+     * Get the full matrix configuration
+     */
+    getFullMatrix() {
+      return this.matrix;
+    }
+    
+    /**
+     * Create a customized attribute set based on role requirements
+     */
+    createCustomAttributes(roleRequirements) {
+      const customAttributes = this.getDefaultAttributes();
+      
+      // Apply role-specific attribute adjustments
+      if (roleRequirements) {
+        Object.entries(roleRequirements).forEach(([category, attributes]) => {
+          if (customAttributes[category]) {
+            Object.entries(attributes).forEach(([attribute, value]) => {
+              if (customAttributes[category][attribute] !== undefined) {
+                // Handle array values (like coping mechanisms)
+                if (Array.isArray(customAttributes[category][attribute])) {
+                  customAttributes[category][attribute] = Array.isArray(value) ? [...value] : [value];
+                } else {
+                  // Ensure the value is within the defined range if applicable
+                  const config = this.matrix[category][attribute];
+                  if (config && config.range) {
+                    const [min, max] = config.range;
+                    customAttributes[category][attribute] = Math.max(min, Math.min(max, value));
+                  } else {
+                    customAttributes[category][attribute] = value;
+                  }
+                }
+              }
+            });
+          }
+        });
+      }
+      
+      return customAttributes;
+    }
+    
+    /**
+     * Calculate compatibility between an agent profile and role requirements
+     */
+    calculateCompatibility(agentAttributes, roleRequirements) {
+      let totalScore = 0;
+      let maxPossibleScore = 0;
+      
+      // Compare each attribute in the role requirements to the agent attributes
+      Object.entries(roleRequirements).forEach(([category, attributes]) => {
+        if (agentAttributes[category]) {
+          Object.entries(attributes).forEach(([attribute, requiredValue]) => {
+            if (agentAttributes[category][attribute] !== undefined) {
+              // For array values (like coping mechanisms)
+              if (Array.isArray(requiredValue) && Array.isArray(agentAttributes[category][attribute])) {
+                const matchCount = requiredValue.filter(v => agentAttributes[category][attribute].includes(v)).length;
+                const maxMatch = Math.max(requiredValue.length, agentAttributes[category][attribute].length);
+                totalScore += matchCount / maxMatch;
+                maxPossibleScore += 1;
+              } 
+              // For numeric values
+              else if (typeof requiredValue === 'number' && typeof agentAttributes[category][attribute] === 'number') {
+                // Calculate how close the agent's value is to the required value (normalized to 0-1)
+                const config = this.matrix[category][attribute];
+                if (config && config.range) {
+                  const [min, max] = config.range;
+                  const range = max - min;
+                  const difference = Math.abs(agentAttributes[category][attribute] - requiredValue);
+                  const similarity = 1 - (difference / range);
+                  totalScore += similarity;
+                  maxPossibleScore += 1;
+                }
+              }
+              // For string or boolean values
+              else if (agentAttributes[category][attribute] === requiredValue) {
+                totalScore += 1;
+                maxPossibleScore += 1;
+              }
+            }
+          });
+        }
+      });
+      
+      // Calculate final compatibility score (0-100%)
+      const compatibilityScore = maxPossibleScore > 0 ? 
+        (totalScore / maxPossibleScore) * 100 : 0;
+      
+      return {
+        score: compatibilityScore,
+        matches: totalScore,
+        possibleMatches: maxPossibleScore,
+        details: this._generateCompatibilityDetails(agentAttributes, roleRequirements)
+      };
+    }
+    
+    /**
+     * Generate detailed compatibility information
+     */
+    _generateCompatibilityDetails(agentAttributes, roleRequirements) {
+      const details = {};
+      
+      Object.entries(roleRequirements).forEach(([category, attributes]) => {
+        details[category] = {};
+        
+        Object.entries(attributes).forEach(([attribute, requiredValue]) => {
+          if (agentAttributes[category] && agentAttributes[category][attribute] !== undefined) {
+            const agentValue = agentAttributes[category][attribute];
+            
+            // For array values
+            if (Array.isArray(requiredValue) && Array.isArray(agentValue)) {
+              const matches = requiredValue.filter(v => agentValue.includes(v));
+              const missing = requiredValue.filter(v => !agentValue.includes(v));
+              const extra = agentValue.filter(v => !requiredValue.includes(v));
+              
+              details[category][attribute] = {
+                match: matches.length === requiredValue.length && extra.length === 0,
+                matchScore: matches.length / Math.max(requiredValue.length, agentValue.length),
+                matches,
+                missing,
+                extra
+              };
+            }
+            // For numeric values
+            else if (typeof requiredValue === 'number' && typeof agentValue === 'number') {
+              const config = this.matrix[category][attribute];
+              let matchScore = 0;
+              
+              if (config && config.range) {
+                const [min, max] = config.range;
+                const range = max - min;
+                const difference = Math.abs(agentValue - requiredValue);
+                matchScore = 1 - (difference / range);
+              }
+              
+              details[category][attribute] = {
+                match: agentValue === requiredValue,
+                matchScore,
+                agentValue,
+                requiredValue,
+                difference: agentValue - requiredValue
+              };
+            }
+            // For string or boolean values
+            else {
+              details[category][attribute] = {
+                match: agentValue === requiredValue,
+                matchScore: agentValue === requiredValue ? 1 : 0,
+                agentValue,
+                requiredValue
+              };
+            }
+          } else {
+            details[category][attribute] = {
+              match: false,
+              matchScore: 0,
+              missing: true
+            };
+          }
+        });
+      });
+      
+      return details;
+    }
+    
+    /**
+     * Optimize attributes to better match role requirements
+     */
+    optimizeAttributes(agentAttributes, roleRequirements, optimizationLevel = 0.5) {
+      const optimizedAttributes = JSON.parse(JSON.stringify(agentAttributes)); // Deep copy
+      
+      // Determine which attributes to adjust based on compatibility
+      const compatibility = this._generateCompatibilityDetails(agentAttributes, roleRequirements);
+      
+      Object.entries(compatibility).forEach(([category, attributes]) => {
+        Object.entries(attributes).forEach(([attribute, detail]) => {
+          // Only adjust attributes that don't fully match
+          if (!detail.match && !detail.missing) {
+            // For array values
+            if (Array.isArray(roleRequirements[category][attribute]) && 
+                Array.isArray(optimizedAttributes[category][attribute])) {
+              
+              // Add missing required values
+              detail.missing.forEach(value => {
+                if (!optimizedAttributes[category][attribute].includes(value)) {
+                  optimizedAttributes[category][attribute].push(value);
+                }
+              });
+              
+              // Remove some extra values if there are too many
+              if (detail.extra.length > 0 && optimizedAttributes[category][attribute].length > roleRequirements[category][attribute].length * 1.5) {
+                // Keep some extras for diversity but remove others
+                const extraToRemove = Math.floor(detail.extra.length * optimizationLevel);
+                for (let i = 0; i < extraToRemove; i++) {
+                  const extraValue = detail.extra[i];
+                  const indexToRemove = optimizedAttributes[category][attribute].indexOf(extraValue);
+                  if (indexToRemove > -1) {
+                    optimizedAttributes[category][attribute].splice(indexToRemove, 1);
+                  }
+                }
+              }
+            }
+            // For numeric values
+            else if (typeof roleRequirements[category][attribute] === 'number' && 
+                     typeof optimizedAttributes[category][attribute] === 'number') {
+              
+              const requiredValue = roleRequirements[category][attribute];
+              const currentValue = optimizedAttributes[category][attribute];
+              const difference = requiredValue - currentValue;
+              
+              // Adjust the value toward the required value based on optimization level
+              const adjustment = difference * optimizationLevel;
+              let newValue = currentValue + adjustment;
+              
+              // Ensure the value is within the defined range
+              const config = this.matrix[category][attribute];
+              if (config && config.range) {
+                const [min, max] = config.range;
+                newValue = Math.max(min, Math.min(max, newValue));
+              }
+              
+              optimizedAttributes[category][attribute] = newValue;
+            }
+            // For string or boolean values (direct replacement if optimization level is high enough)
+            else if (optimizationLevel > 0.7) {
+              optimizedAttributes[category][attribute] = roleRequirements[category][attribute];
+            }
+          }
+        });
+      });
+      
+      return {
+        originalAttributes: agentAttributes,
+        optimizedAttributes,
+        compatibility: this.calculateCompatibility(agentAttributes, roleRequirements),
+        optimizedCompatibility: this.calculateCompatibility(optimizedAttributes, roleRequirements),
+        optimizationLevel
+      };
+    }
+    
+    /**
+     * Generate random attributes based on the matrix
+     */
+    generateRandomAttributes() {
+      const randomAttributes = {};
+      
+      Object.entries(this.matrix).forEach(([category, attributes]) => {
+        randomAttributes[category] = {};
+        
+        Object.entries(attributes).forEach(([attribute, config]) => {
+          if (Array.isArray(config.options)) {
+            // For array values, select a random subset
+            const numToSelect = Math.floor(Math.random() * 3) + 1; // Select 1-3 options
+            const selectedOptions = [];
+            
+            for (let i = 0; i < numToSelect; i++) {
+              const randomOption = config.options[Math.floor(Math.random() * config.options.length)];
+              if (!selectedOptions.includes(randomOption)) {
+                selectedOptions.push(randomOption);
+              }
+            }
+            
+            randomAttributes[category][attribute] = selectedOptions;
+          } else if (config.range) {
+            // For numeric values, select a random value within the range
+            const [min, max] = config.range;
+            randomAttributes[category][attribute] = Math.floor(Math.random() * (max - min + 1)) + min;
+          } else {
+            // For other values, use the default
+            randomAttributes[category][attribute] = config.default;
+          }
+        });
+      });
+      
+      return randomAttributes;
+    }
+    
+    /**
+     * Blend attributes from multiple sources with different weights
+     */
+    blendAttributes(attributeSets, weights) {
+      const blendedAttributes = {};
+      
+      // Normalize weights
+      const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
+      const normalizedWeights = weights.map(weight => weight / totalWeight);
+      
+      // For each category and attribute in the matrix
+      Object.entries(this.matrix).forEach(([category, attributes]) => {
+        blendedAttributes[category] = {};
+        
+        Object.entries(attributes).forEach(([attribute, config]) => {
+          // For array values (like coping mechanisms)
+          if (Array.isArray(config.options)) {
+            // Collect all unique values with their weighted counts
+            const valueCounts = {};
+            
+            attributeSets.forEach((attributes, index) => {
+              if (attributes[category] && Array.isArray(attributes[category][attribute])) {
+                attributes[category][attribute].forEach(value => {
+                  valueCounts[value] = (valueCounts[value] || 0) + normalizedWeights[index];
+                });
+              }
+            });
+            
+            // Select values with highest weights
+            const sortedValues = Object.entries(valueCounts)
+              .sort((a, b) => b[1] - a[1])
+              .map(([value, _]) => value);
+            
+            // Take top 2-3 values
+            blendedAttributes[category][attribute] = sortedValues.slice(0, Math.floor(Math.random() * 2) + 2);
+          } 
+          // For numeric values
+          else if (config.range) {
+            // Calculate weighted average
+            let weightedSum = 0;
+            let validWeightSum = 0;
+            
+            attributeSets.forEach((attributes, index) => {
+              if (attributes[category] && typeof attributes[category][attribute] === 'number') {
+                weightedSum += attributes[category][attribute] * normalizedWeights[index];
+                validWeightSum += normalizedWeights[index];
+              }
+            });
+            
+            // If no valid values were found, use default
+            if (validWeightSum === 0) {
+              blendedAttributes[category][attribute] = config.default;
+            } else {
+              // Adjust for missing values
+              const average = weightedSum / validWeightSum;
+              const [min, max] = config.range;
+              blendedAttributes[category][attribute] = Math.max(min, Math.min(max, average));
+            }
+          } 
+          // For other values, use mode (most common value)
+          else {
+            const valueCounts = {};
+            let maxCount = 0;
+            let mostCommonValue = config.default;
+            
+            attributeSets.forEach((attributes, index) => {
+              if (attributes[category] && attributes[category][attribute] !== undefined) {
+                const value = attributes[category][attribute];
+                valueCounts[value] = (valueCounts[value] || 0) + normalizedWeights[index];
+                
+                if (valueCounts[value] > maxCount) {
+                  maxCount = valueCounts[value];
+                  mostCommonValue = value;
+                }
+              }
+            });
+            
+            blendedAttributes[category][attribute] = mostCommonValue;
+          }
+        });
+      });
+      
+      return blendedAttributes;
+    }
+  }
+  
+  // Export the BehavioralMatrix class for use by other modules
+  module.exports = BehavioralMatrix;

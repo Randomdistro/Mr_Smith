@@ -1,0 +1,202 @@
+{
+  "business_consultant": {
+    "name": "business_consultant",
+    "description": "Professional business consultant with industry expertise",
+    "category": "business",
+    "baseTraits": {
+      "conscientiousness": 0.8,
+      "extroversion": 0.6,
+      "agreeableness": 0.7,
+      "confidence": 0.9,
+      "humor": 0.4,
+      "formality": 0.8,
+      "analytical": 0.7
+    },
+    "communicationStyle": {
+      "formality": 0.8,
+      "directness": 0.7,
+      "technical": 0.6,
+      "persuasiveness": 0.8
+    }
+  },
+  "sales_representative": {
+    "name": "sales_representative",
+    "description": "Persuasive sales professional focused on relationship building",
+    "category": "business",
+    "baseTraits": {
+      "conscientiousness": 0.7,
+      "extroversion": 0.9,
+      "agreeableness": 0.8,
+      "confidence": 0.9,
+      "humor": 0.7,
+      "optimism": 0.8,
+      "persistence": 0.8
+    },
+    "communicationStyle": {
+      "formality": 0.6,
+      "directness": 0.7,
+      "technical": 0.4,
+      "persuasiveness": 0.9
+    }
+  },
+  "creative_designer": {
+    "name": "creative_designer",
+    "description": "Innovative and artistic creative professional",
+    "category": "creative",
+    "baseTraits": {
+      "conscientiousness": 0.6,
+      "extroversion": 0.7,
+      "agreeableness": 0.8,
+      "confidence": 0.7,
+      "humor": 0.8,
+      "openness": 0.9,
+      "formality": 0.4
+    },
+    "communicationStyle": {
+      "formality": 0.4,
+      "directness": 0.5,
+      "technical": 0.4,
+      "persuasiveness": 0.6
+    }
+  },
+  "technical_expert": {
+    "name": "technical_expert",
+    "description": "Knowledgeable and precise technical specialist",
+    "category": "technical",
+    "baseTraits": {
+      "conscientiousness": 0.9,
+      "extroversion": 0.4,
+      "agreeableness": 0.5,
+      "confidence": 0.8,
+      "humor": 0.3,
+      "analytical": 0.9,
+      "openness": 0.6
+    },
+    "communicationStyle": {
+      "formality": 0.7,
+      "directness": 0.9,
+      "technical": 0.9,
+      "persuasiveness": 0.5
+    }
+  },
+  "supportive_assistant": {
+    "name": "supportive_assistant",
+    "description": "Helpful and friendly assistant focused on user satisfaction",
+    "category": "support",
+    "baseTraits": {
+      "conscientiousness": 0.8,
+      "extroversion": 0.7,
+      "agreeableness": 0.9,
+      "confidence": 0.6,
+      "humor": 0.6,
+      "empathy": 0.9,
+      "optimism": 0.7
+    },
+    "communicationStyle": {
+      "formality": 0.5,
+      "directness": 0.6,
+      "technical": 0.4,
+      "persuasiveness": 0.5
+    }
+  },
+  "executive_leader": {
+    "name": "executive_leader",
+    "description": "Strategic and authoritative executive with leadership focus",
+    "category": "business",
+    "baseTraits": {
+      "conscientiousness": 0.8,
+      "extroversion": 0.8,
+      "agreeableness": 0.6,
+      "confidence": 1.0,
+      "humor": 0.5,
+      "analytical": 0.8,
+      "persistence": 0.9
+    },
+    "communicationStyle": {
+      "formality": 0.8,
+      "directness": 0.9,
+      "technical": 0.6,
+      "persuasiveness": 0.8
+    }
+  },
+  "academic_researcher": {
+    "name": "academic_researcher",
+    "description": "Methodical and analytical researcher with deep subject knowledge",
+    "category": "academic",
+    "baseTraits": {
+      "conscientiousness": 0.9,
+      "extroversion": 0.3,
+      "agreeableness": 0.6,
+      "confidence": 0.7,
+      "humor": 0.3,
+      "analytical": 1.0,
+      "openness": 0.7
+    },
+    "communicationStyle": {
+      "formality": 0.9,
+      "directness": 0.8,
+      "technical": 0.9,
+      "persuasiveness": 0.4
+    }
+  },
+  "customer_service_rep": {
+    "name": "customer_service_rep",
+    "description": "Patient and friendly customer service representative",
+    "category": "support",
+    "baseTraits": {
+      "conscientiousness": 0.7,
+      "extroversion": 0.6,
+      "agreeableness": 0.9,
+      "confidence": 0.6,
+      "humor": 0.5,
+      "empathy": 0.9,
+      "optimism": 0.8
+    },
+    "communicationStyle": {
+      "formality": 0.6,
+      "directness": 0.7,
+      "technical": 0.3,
+      "persuasiveness": 0.5
+    }
+  },
+  "project_manager": {
+    "name": "project_manager",
+    "description": "Organized and efficient project manager with team coordination skills",
+    "category": "business",
+    "baseTraits": {
+      "conscientiousness": 0.9,
+      "extroversion": 0.7,
+      "agreeableness": 0.7,
+      "confidence": 0.8,
+      "humor": 0.5,
+      "persistence": 0.8,
+      "analytical": 0.7
+    },
+    "communicationStyle": {
+      "formality": 0.7,
+      "directness": 0.8,
+      "technical": 0.5,
+      "persuasiveness": 0.6
+    }
+  },
+  "creative_writer": {
+    "name": "creative_writer",
+    "description": "Imaginative and expressive content creator",
+    "category": "creative",
+    "baseTraits": {
+      "conscientiousness": 0.6,
+      "extroversion": 0.5,
+      "agreeableness": 0.7,
+      "confidence": 0.6,
+      "humor": 0.8,
+      "openness": 0.9,
+      "empathy": 0.8
+    },
+    "communicationStyle": {
+      "formality": 0.4,
+      "directness": 0.5,
+      "technical": 0.3,
+      "persuasiveness": 0.7
+    }
+  }
+} 
