@@ -18,6 +18,7 @@
     "meeting:brief": "node src/examples/meeting_assistant_example.js brief",
     "meeting:talking-points": "node src/examples/meeting_assistant_example.js talking-points",
     "meeting:record": "node src/examples/meeting_assistant_example.js record",
+    "python:services": "cd python_services && python structural_sim_service.py",
     "test": "jest"
   },
   "repository": {
@@ -38,6 +39,7 @@
     "dotenv": "^16.4.7",
     "exceljs": "^4.3.0",
     "fs-extra": "^10.1.0",
+    "kafkajs": "^2.2.4",
     "moment": "^2.29.3",
     "natural": "^8.0.1",
     "node": "^20.19.0",
@@ -45,7 +47,8 @@
     "nvm": "^0.0.4",
     "pip": "^0.0.1",
     "puppeteer": "^24.4.0",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "zeromq": "^6.0.0-beta.19"
   },
   "devDependencies": {
     "jest": "^28.0.0",

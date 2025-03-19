@@ -63,6 +63,16 @@ class EngineerAgent extends Agent {
                 agent: this
             }));
             
+            // Add Python bridge for advanced computational capabilities
+            const PythonBridgeTool = require('../../tools/bridge/PythonBridgeTool');
+            this.tools.set('python-bridge', new PythonBridgeTool({
+                mrSmith: this.mrSmith,
+                agent: this,
+                connectorConfig: {
+                    rayClusterAddress: 'localhost:5570'  // Connect to structural simulation service
+                }
+            }));
+            
             this.logger.info(`EngineerAgent initialized with ${this.tools.size} engineering tools`);
         } catch (error) {
             this.logger.error('Error initializing EngineerAgent tools:', error);
@@ -99,6 +109,10 @@ class EngineerAgent extends Agent {
                     
                 case 'engineering:cost:estimate':
                     result = await this.estimateCosts(projectId, data);
+                    break;
+                    
+                case 'engineering:python:simulate':
+                    result = await this.runPythonSimulation(projectId, data);
                     break;
                     
                 default:
@@ -274,6 +288,93 @@ class EngineerAgent extends Agent {
             metrics: simulationResult.metrics,
             visualizationUrl: simulationResult.visualizationUrl
         };
+    }
+    
+    async runPythonSimulation(projectId, data) {
+        try {
+            this.logger.info(`Running Python-based structural simulation for project ${projectId}`);
+            
+            // Get the Python bridge tool
+            const pythonBridgeTool = this.tools.get('python-bridge');
+            
+            // First, check if the structural_sim service is available
+            const services = await pythonBridgeTool.execute({
+                action: 'list-services'
+            });
+            
+            if (!services.services.includes('structural_sim')) {
+                this.logger.warn('Structural simulation service not available');
+                
+                // Fallback to regular simulation
+                this.logger.info('Falling back to regular simulation');
+                return await this.runSimulation(projectId, data);
+            }
+            
+            // Run the Python-based FEA simulation
+            const simulationResult = await pythonBridgeTool.execute({
+                action: 'call-service',
+                service: 'structural_sim',
+                method: 'run_finite_element_analysis',
+                params: {
+                    model: {
+                        surface_area: data.parameters?.surfaceArea || 10.0,
+                        material_properties: {
+                            youngs_modulus: data.parameters?.youngsModulus || 200e9,
+                            poissons_ratio: data.parameters?.poissonsRatio || 0.3,
+                            density: data.parameters?.density || 7800
+                        }
+                    },
+                    mesh_data: {
+                        nodes: data.mesh?.nodes || this._generateSampleMesh().nodes,
+                        elements: data.mesh?.elements || this._generateSampleMesh().elements
+                    },
+                    wind_speed: data.parameters?.windSpeed || 120,
+                    boundary_conditions: data.parameters?.boundaryConditions || {}
+                }
+            });
+            
+            // Store the simulation result
+            this.simulationResults.set(`${projectId}-python-fea`, simulationResult);
+            
+            return {
+                status: 'success',
+                simulationId: simulationResult.id,
+                maxStress: simulationResult.max_stress,
+                minSafetyFactor: simulationResult.min_safety_factor,
+                maxDeformation: simulationResult.max_deformation,
+                criticalPoints: simulationResult.critical_points,
+                performance: simulationResult.performance_metrics
+            };
+        } catch (error) {
+            this.logger.error(`Error in Python simulation:`, error);
+            throw new Error(`Failed to run Python simulation: ${error.message}`);
+        }
+    }
+    
+    _generateSampleMesh() {
+        // Generate a simple sample mesh for testing
+        const nodes = [];
+        const elements = [];
+        
+        // Create a 10x10 grid of nodes
+        for (let i = 0; i < 10; i++) {
+            for (let j = 0; j < 10; j++) {
+                nodes.push([i, j, 0]);
+            }
+        }
+        
+        // Create elements (quads) connecting the nodes
+        for (let i = 0; i < 9; i++) {
+            for (let j = 0; j < 9; j++) {
+                const n1 = i * 10 + j;
+                const n2 = i * 10 + j + 1;
+                const n3 = (i + 1) * 10 + j + 1;
+                const n4 = (i + 1) * 10 + j;
+                elements.push([n1, n2, n3, n4]);
+            }
+        }
+        
+        return { nodes, elements };
     }
     
     async estimateCosts(projectId, data) {

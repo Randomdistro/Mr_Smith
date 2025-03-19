@@ -1,0 +1,30 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Simulation results
+simulation_results/
+
+# Ray cluster files
+ray_data/
+ray_logs/
+session_*/
+plasma_store*
+*.log
+
+# Misc
+.DS_Store 
