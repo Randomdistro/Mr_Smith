@@ -1,6 +1,6 @@
 /**
  * Mr. Smith Activation Script
- * This script initializes and activates the Mr. Smith system with all agents and teams.
+ * This script initializes and activates the Mr. Smith system with the new tier-based architecture
  */
 
 require('dotenv').config();
@@ -36,7 +36,8 @@ function displayBanner() {
     console.log('  | |  | | |     ____) | | | | | | | |_| | | |');
     console.log('  |_|  |_|_|    |_____/|_| |_| |_|_|\\__|_| |_|');
     console.log('                                               ');
-    console.log('  Multi-Agent System - Version 3.7.0                          ');
+    console.log('  Multi-Agent System - Version 4.0.0                          ');
+    console.log('  [Tier-Based Architecture]                                   ');
     console.log('===============================================================');
     console.log('\n');
 }
@@ -51,9 +52,15 @@ async function activateMrSmith() {
         // Create Mr. Smith instance with configuration
         const mrSmith = new MrSmith({
             logger,
-            maxAgents: process.env.MAX_AGENTS || 15,
             operationalMode: process.env.OPERATIONAL_MODE || 'autonomous',
-            dataRetentionPolicy: process.env.DATA_RETENTION_POLICY || 'compliance'
+            dataRetentionPolicy: process.env.DATA_RETENTION_POLICY || 'compliance',
+            maxConcurrentWorkflows: parseInt(process.env.MAX_CONCURRENT_WORKFLOWS || '5', 10),
+            maxAgentsPerTier: {
+                lightweight: parseInt(process.env.MAX_LIGHTWEIGHT_AGENTS || '50', 10),
+                core: parseInt(process.env.MAX_CORE_AGENTS || '10', 10),
+                specialist: parseInt(process.env.MAX_SPECIALIST_AGENTS || '5', 10),
+                orchestrator: parseInt(process.env.MAX_ORCHESTRATOR_AGENTS || '3', 10)
+            }
         });
         
         // Initialize Mr. Smith system
@@ -63,35 +70,41 @@ async function activateMrSmith() {
         // Display system status
         const uptime = mrSmith.calculateUptime();
         logger.info(`System initialized. Uptime: ${uptime.seconds}s`);
-        logger.info(`Loaded ${mrSmith.agents.size} agents and ${mrSmith.teams.size} teams`);
         
-        // List all available agents and teams
-        console.log('\nAvailable Agents:');
-        for (const agentName of mrSmith.agents.keys()) {
-            console.log(`- ${agentName}`);
+        // Display active agents
+        const agentStatus = mrSmith.getActiveAgents();
+        logger.info(`Activated ${agentStatus.total} agents across tiers`);
+        
+        console.log('\nActive Agents by Tier:');
+        for (const [tier, count] of Object.entries(agentStatus.byTier)) {
+            if (count > 0) {
+                console.log(`- ${tier}: ${count}`);
+            }
         }
         
-        console.log('\nAvailable Teams:');
-        for (const teamName of mrSmith.teams.keys()) {
-            console.log(`- ${teamName}`);
+        if (agentStatus.agents.length > 0) {
+            console.log('\nActive Agents:');
+            for (const agent of agentStatus.agents) {
+                console.log(`- ${agent.type} (${agent.tier}): ${agent.status}`);
+            }
         }
 
-        // Example workflow start (uncomment to use)
+        // Example workflow (uncomment to use)
         /*
-        mrSmith.eventBus.emit('project:manufacturing:create', {
-            projectName: 'Sample Manufacturing Project',
-            productType: 'consumer-electronics',
-            requirements: {
-                description: 'Smart home device with temperature monitoring',
-                constraints: {
-                    size: 'compact',
-                    powerRequirements: 'low-voltage'
+        mrSmith.eventBus.emit('workflow:start', {
+            type: 'query',
+            data: {
+                query: 'latest advancements in 3D printing',
+                type: 'web-search',
+                options: {
+                    depth: 2,
+                    extractImages: true
                 }
             }
         });
         */
         
-        console.log('\nMr. Smith is now active and awaiting instructions.');
+        console.log('\nMr. Smith is now active and ready for instructions.');
         console.log('Use the API or event system to interact with Mr. Smith.');
         console.log('\nPress Ctrl+C to shutdown.');
         

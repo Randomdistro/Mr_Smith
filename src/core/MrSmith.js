@@ -1,60 +1,41 @@
 /**
- * MrSmith - Main System Controller Class
- * Orchestrates the entire system of specialized agents and tools
+ * MrSmith - Main System Controller
+ * Orchestrates the entire agent ecosystem using the new tier-based architecture
  */
 
 const EventBus = require('./EventBus');
-const Agent = require('./Agent');
+const AgentFactory = require('./AgentFactory');
 const EnterpriseDatabase = require('./EnterpriseDatabase');
+const WorkflowManager = require('../workflow/WorkflowManager');
 const BehavioralMatrix = require('./BehavioralMatrix');
-
-// Import base agents
-const ResearcherAgent = require('../agents/ResearcherAgent');
-const DataProcessorAgent = require('../agents/DataProcessorAgent');
-const ContactManagerAgent = require('../agents/ContactManagerAgent');
-const CommunicationsAgent = require('../agents/CommunicationsAgent');
-const OpportunityAnalyzerAgent = require('../agents/OpportunityAnalyzerAgent');
-
-// Import specialized agents
-const EngineerAgent = require('../agents/EngineerAgent');
-const MechanicAgent = require('../agents/MechanicAgent');
-const DesignAgent = require('../agents/DesignAgent');
-const CADAgent = require('../agents/CADAgent');
-const PrintSliceAgent = require('../agents/PrintSliceAgent');
-
-// Import teams
-const ManufacturingTeam = require('../teams/manufacturing/ManufacturingTeam');
-const RobotailoringTeam = require('../teams/robotailoring/RobotailoringTeam');
 
 class MrSmith {
     constructor(config = {}) {
         this.eventBus = new EventBus();
         this.database = new EnterpriseDatabase();
         this.behavioralMatrix = new BehavioralMatrix();
-        this.agents = new Map();
-        this.teams = new Map();
         this.workflowManager = null;
         this.systemStartTime = new Date();
         
         this.config = {
-            maxAgents: 15,
+            // Default configuration
+            operationalMode: 'autonomous', // 'autonomous' or 'supervised'
             dataRetentionPolicy: 'compliance',
-            operationalMode: 'autonomous',
             ethicalConstraints: 'oracle-approved',
-            learningRate: 0.85,
-            interAgentCommunication: true,
-            adaptivePersonalization: true,
-            performanceMetrics: {
-                responseTime: true,
-                conversionRate: true,
-                relationshipDepth: true,
-                dataAccuracy: true,
-                opportunityDiscovery: true
+            maxConcurrentWorkflows: 5,
+            maxAgentsPerTier: {
+                lightweight: 50, // Tier 1: Many ephemeral agents allowed
+                core: 10,        // Tier 2: Core flexible agents
+                specialist: 5,   // Tier 3: Resource-intensive specialists
+                orchestrator: 3  // Tier 4: Clones of Mr. Smith for distributed processing
             },
             ...config
         };
         
         this.logger = config.logger || console;
+        
+        // Initialize agent factory
+        this.agentFactory = new AgentFactory(this);
     }
 
     async initialize() {
@@ -66,23 +47,16 @@ class MrSmith {
             
             // Initialize workflow manager
             this.logger.info('Initializing workflow manager...');
-            this.workflowManager = new (require('../workflow/WorkflowManager'))(this);
-            
-            // Initialize base agents
-            this.logger.info('Initializing base agents...');
-            await this.initializeBaseAgents();
-            
-            // Initialize specialized agents
-            this.logger.info('Initializing specialized agents...');
-            await this.initializeSpecializedAgents();
-            
-            // Initialize teams
-            this.logger.info('Initializing teams...');
-            await this.initializeTeams();
+            this.workflowManager = new WorkflowManager(this);
             
             // Set up event listeners
             this.logger.info('Setting up event listeners...');
             this.setupEventListeners();
+            
+            // Initialize core agents 
+            // These are always-on agents needed for basic functionality
+            this.logger.info('Initializing core agents...');
+            await this.initializeCoreAgents();
             
             this.logger.info('MrSmith system initialization complete');
             return true;
@@ -92,75 +66,33 @@ class MrSmith {
         }
     }
 
-    async initializeBaseAgents() {
+    async initializeCoreAgents() {
         try {
-            // Initialize the base agents
-            const baseAgents = [
-                { name: 'ResearcherAgent', AgentClass: ResearcherAgent },
-                { name: 'DataProcessorAgent', AgentClass: DataProcessorAgent },
-                { name: 'ContactManagerAgent', AgentClass: ContactManagerAgent },
-                { name: 'CommunicationsAgent', AgentClass: CommunicationsAgent },
-                { name: 'OpportunityAnalyzerAgent', AgentClass: OpportunityAnalyzerAgent }
-            ];
+            // Get core-tier agents only
+            const coreAgentTypes = this.agentFactory.getAgentTypesByTier('core');
             
-            for (const { name, AgentClass } of baseAgents) {
-                this.logger.info(`Initializing ${name}...`);
-                const agent = new AgentClass(this);
-                await agent.initialize();
-                this.agents.set(name, agent);
+            for (const agentType of coreAgentTypes) {
+                try {
+                    // Skip optional core agents during development
+                    const isRequired = ['ResearcherAgent', 'DataProcessorAgent'].includes(agentType);
+                    
+                    if (isRequired) {
+                        await this.agentFactory.getAgent(agentType);
+                        this.logger.info(`Initialized core agent: ${agentType}`);
+                    }
+                } catch (error) {
+                    if (isRequired) {
+                        throw error; // Re-throw for required agents
+                    } else {
+                        // Just log for optional agents
+                        this.logger.warn(`Failed to initialize optional core agent ${agentType}: ${error.message}`);
+                    }
+                }
             }
             
             return true;
         } catch (error) {
-            this.logger.error('Failed to initialize base agents:', error);
-            throw error;
-        }
-    }
-
-    async initializeSpecializedAgents() {
-        try {
-            // Initialize specialized agents
-            const specializedAgents = [
-                { name: 'EngineerAgent', AgentClass: EngineerAgent },
-                { name: 'MechanicAgent', AgentClass: MechanicAgent },
-                { name: 'DesignAgent', AgentClass: DesignAgent },
-                { name: 'CADAgent', AgentClass: CADAgent },
-                { name: 'PrintSliceAgent', AgentClass: PrintSliceAgent }
-            ];
-            
-            for (const { name, AgentClass } of specializedAgents) {
-                this.logger.info(`Initializing ${name}...`);
-                const agent = new AgentClass(this);
-                await agent.initialize();
-                this.agents.set(name, agent);
-            }
-            
-            return true;
-        } catch (error) {
-            this.logger.error('Failed to initialize specialized agents:', error);
-            throw error;
-        }
-    }
-
-    async initializeTeams() {
-        try {
-            // Initialize teams
-            
-            // Manufacturing Design Team
-            this.logger.info('Initializing Manufacturing Team...');
-            const manufacturingTeam = new ManufacturingTeam(this);
-            this.teams.set('ManufacturingTeam', manufacturingTeam);
-            
-            // Robotailoring Design Team
-            this.logger.info('Initializing Robotailoring Team...');
-            const robotailoringTeam = new RobotailoringTeam(this);
-            this.teams.set('RobotailoringTeam', robotailoringTeam);
-            
-            // TODO: Add other teams as they are implemented
-            
-            return true;
-        } catch (error) {
-            this.logger.error('Failed to initialize teams:', error);
+            this.logger.error('Failed to initialize core agents:', error);
             throw error;
         }
     }
@@ -171,7 +103,9 @@ class MrSmith {
         this.eventBus.on('agent:task:complete', this.handleAgentTaskComplete.bind(this));
         this.eventBus.on('error', this.handleError.bind(this));
         
-        // Add more event listeners as needed
+        // Add tier-specific event handlers
+        this.eventBus.on('agent:created', this.handleAgentCreated.bind(this));
+        this.eventBus.on('agent:released', this.handleAgentReleased.bind(this));
     }
 
     async handleWorkflowStart(workflowData) {
@@ -201,6 +135,35 @@ class MrSmith {
             this.handleError(error);
         }
     }
+    
+    async handleAgentCreated(agentData) {
+        try {
+            const { agentType, tier } = agentData;
+            this.logger.debug(`Agent created: ${agentType} (${tier})`);
+            
+            // Check if we're exceeding limits for this tier
+            const activeAgents = this.agentFactory.getActiveAgents();
+            const agentsInTier = Array.from(activeAgents.values())
+                .filter(agent => agent.config.tier === tier);
+                
+            const tierLimit = this.config.maxAgentsPerTier[tier];
+            
+            if (agentsInTier.length > tierLimit) {
+                this.logger.warn(`Tier ${tier} has ${agentsInTier.length} agents, exceeding the limit of ${tierLimit}`);
+            }
+        } catch (error) {
+            this.handleError(error);
+        }
+    }
+    
+    async handleAgentReleased(agentData) {
+        try {
+            const { agentType, tier } = agentData;
+            this.logger.debug(`Agent released: ${agentType} (${tier})`);
+        } catch (error) {
+            this.handleError(error);
+        }
+    }
 
     handleError(error) {
         this.logger.error('System error:', error);
@@ -211,29 +174,127 @@ class MrSmith {
             timestamp: new Date().toISOString()
         });
     }
+    
+    /**
+     * Creates a specialized agent of the specified type when needed
+     * Implements the "on-demand" instantiation approach
+     * @param {string} agentType - Type of agent to create
+     * @param {Object} config - Agent configuration
+     * @returns {Promise<Agent>} - The instantiated agent
+     */
+    async createAgent(agentType, config = {}) {
+        try {
+            const agent = await this.agentFactory.getAgent(agentType, config);
+            return agent;
+        } catch (error) {
+            this.logger.error(`Failed to create agent ${agentType}:`, error);
+            throw error;
+        }
+    }
+    
+    /**
+     * Creates a temporary "fire and forget" agent that will be released after completing its task
+     * @param {string} agentType - Type of lightweight agent to create
+     * @param {Object} taskData - The task for the agent to perform
+     * @returns {Promise<any>} - The result of the agent's task
+     */
+    async createTemporaryAgent(agentType, taskData) {
+        try {
+            // Create a temporary agent (will be garbage collected after task completion)
+            const agent = await this.agentFactory.getAgent(agentType, { temporary: true });
+            
+            // Have it process the task directly
+            const result = await agent.handleTask(taskData);
+            
+            // Result is returned and agent will be cleaned up automatically
+            return result;
+        } catch (error) {
+            this.logger.error(`Error with temporary agent ${agentType}:`, error);
+            throw error;
+        }
+    }
+    
+    /**
+     * Releases a specialist agent when it's no longer needed
+     * @param {string} agentType - The type of agent to release
+     */
+    releaseAgent(agentType) {
+        this.agentFactory.releaseAgent(agentType);
+    }
+    
+    /**
+     * Create a distributed clone of Mr. Smith for load balancing
+     * @param {Object} config - Clone configuration
+     * @returns {Promise<Agent>} - The Mr. Smith clone
+     */
+    async cloneInstance(config = {}) {
+        return await this.createAgent('MrSmithClone', {
+            ...config,
+            tier: 'orchestrator',
+            parentId: this.id || 'primary'
+        });
+    }
 
     getAgentStatus(agentId) {
-        const agent = this.agents.get(agentId);
-        if (!agent) {
-            return {
-                status: 'error',
-                message: 'Agent not found'
-            };
+        const activeAgents = this.agentFactory.getActiveAgents();
+        
+        for (const agent of activeAgents.values()) {
+            if (agent.id === agentId) {
+                return agent.getState();
+            }
         }
-
-        return agent.getState();
+        
+        return {
+            status: 'error',
+            message: 'Agent not found'
+        };
     }
 
     getAgentPerformance(agentId) {
-        const agent = this.agents.get(agentId);
-        if (!agent) {
-            return {
-                status: 'error',
-                message: 'Agent not found'
-            };
+        const activeAgents = this.agentFactory.getActiveAgents();
+        
+        for (const agent of activeAgents.values()) {
+            if (agent.id === agentId) {
+                return agent.getPerformanceMetrics ? agent.getPerformanceMetrics() : { status: 'not-implemented' };
+            }
         }
         
-        return agent.getPerformanceMetrics ? agent.getPerformanceMetrics() : { status: 'not-implemented' };
+        return {
+            status: 'error',
+            message: 'Agent not found'
+        };
+    }
+    
+    /**
+     * Get information about all active agents by tier
+     * @returns {Object} - Information about active agents by tier
+     */
+    getActiveAgents() {
+        const activeAgents = this.agentFactory.getActiveAgents();
+        const result = {
+            total: activeAgents.size,
+            byTier: {
+                lightweight: 0,
+                core: 0,
+                specialist: 0,
+                orchestrator: 0
+            },
+            agents: []
+        };
+        
+        for (const agent of activeAgents.values()) {
+            const tier = agent.config.tier;
+            result.byTier[tier] = (result.byTier[tier] || 0) + 1;
+            
+            result.agents.push({
+                id: agent.id,
+                type: agent.constructor.name,
+                tier: tier,
+                status: agent.state.status
+            });
+        }
+        
+        return result;
     }
 
     calculateUptime() {
@@ -248,114 +309,23 @@ class MrSmith {
             days: Math.floor(uptimeMs / (1000 * 60 * 60 * 24))
         };
     }
-
-    getDataFlowMetrics() {
-        const metrics = {
-            totalDataPoints: 0,
-            dataPointsByType: {},
-            dataFlowRates: {},
-            bottlenecks: [],
-            optimizationOpportunities: []
-        };
-
-        // Collect metrics from each agent
-        for (const [agentId, agent] of this.agents.entries()) {
-            if (agent.getDataFlowMetrics) {
-                const agentMetrics = agent.getDataFlowMetrics();
-                
-                // Aggregate total data points
-                metrics.totalDataPoints += agentMetrics.processedDataPoints || 0;
-                
-                // Aggregate by data type
-                if (agentMetrics.dataPointsByType) {
-                    Object.entries(agentMetrics.dataPointsByType).forEach(([type, count]) => {
-                        metrics.dataPointsByType[type] = (metrics.dataPointsByType[type] || 0) + count;
-                    });
-                }
-                
-                // Track flow rates
-                if (agentMetrics.processingRate) {
-                    metrics.dataFlowRates[agentId] = agentMetrics.processingRate;
-                }
-                
-                // Identify bottlenecks
-                if (agentMetrics.processingRate && agentMetrics.incomingRate) {
-                    if (agentMetrics.processingRate < agentMetrics.incomingRate * 0.8) {
-                        metrics.bottlenecks.push({
-                            agentId,
-                            severity: 'high',
-                            incomingRate: agentMetrics.incomingRate,
-                            processingRate: agentMetrics.processingRate,
-                            backlogSize: agentMetrics.backlogSize || 0
-                        });
-                    } else if (agentMetrics.processingRate < agentMetrics.incomingRate) {
-                        metrics.bottlenecks.push({
-                            agentId,
-                            severity: 'medium',
-                            incomingRate: agentMetrics.incomingRate,
-                            processingRate: agentMetrics.processingRate,
-                            backlogSize: agentMetrics.backlogSize || 0
-                        });
-                    }
-                }
-                
-                // Identify optimization opportunities
-                if (agentMetrics.idleTimePercentage && agentMetrics.idleTimePercentage > 20) {
-                    metrics.optimizationOpportunities.push({
-                        agentId,
-                        type: 'underutilization',
-                        idleTimePercentage: agentMetrics.idleTimePercentage,
-                        recommendedAction: 'add-tasks-or-increase-workload'
-                    });
-                }
-                
-                if (agentMetrics.errorRate && agentMetrics.errorRate > 0.05) {
-                    metrics.optimizationOpportunities.push({
-                        agentId,
-                        type: 'error-rate',
-                        errorRate: agentMetrics.errorRate,
-                        recommendedAction: 'improve-error-handling'
-                    });
-                }
-            }
-        }
-
-        return metrics;
-    }
-
-    getSystemLoad() {
-        // In a real system, this would collect actual metrics
-        // Here we're providing simulated values
-        return {
-            cpuUtilization: Math.random() * 0.5 + 0.3, // Between 30-80%
-            memoryUtilization: Math.random() * 0.4 + 0.4, // Between 40-80%
-            diskUtilization: Math.random() * 0.3 + 0.2, // Between 20-50%
-            networkUtilization: Math.random() * 0.6 + 0.2, // Between 20-80%
-            threadCount: this.agents.size * 3 + 5, // Base + 3 threads per agent
-            activeConnections: Math.floor(Math.random() * 50) + 10 // Between 10-60
-        };
-    }
-
+    
+    /**
+     * Shutdown the system and release all resources
+     */
     async shutdown() {
-        try {
-            this.logger.info('Shutting down MrSmith system...');
-            
-            // Shutdown all agents
-            for (const agent of this.agents.values()) {
-                await agent.shutdown();
-            }
-
-            // Shutdown core systems
-            await this.database.disconnect();
-            await this.behavioralMatrix.save();
-            
-            this.logger.info('MrSmith system shutdown complete');
-
-            return true;
-        } catch (error) {
-            this.logger.error('Failed to shutdown MrSmith:', error);
-            throw error;
-        }
+        this.logger.info('Starting system shutdown...');
+        
+        // Signal shutdown to all agents
+        this.eventBus.emit('system:shutdown');
+        
+        // Shutdown the agent factory
+        await this.agentFactory.shutdown();
+        
+        // Disconnect from database
+        await this.database.disconnect();
+        
+        this.logger.info('System shutdown complete');
     }
 }
 
